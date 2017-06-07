@@ -49,6 +49,7 @@
 #include "sourcereader.hh"
 #include "instructions_compiler.hh"
 #include "dag_instructions_compiler.hh"
+#include "wagner_compiler.hh"
 #include "schema.h"
 #include "drawschema.hh"
 #include "timing.hh"
@@ -259,6 +260,10 @@ static bool process_cmdline(int argc, const char* argv[])
 
 		} else if (isCmd(argv[i], "-svg", "--svg")) {
 			gGlobal->gDrawSVGSwitch = true;
+			i += 1;
+
+		} else if (isCmd(argv[i], "-w", "--wagner")) {
+			gGlobal->gOutputLang = "wagner";
 			i += 1;
 
 		} else if (isCmd(argv[i], "-f", "--fold") && (i+1 < argc)) {
@@ -555,6 +560,7 @@ static void printhelp()
 	cout << "-f <n> \t\t--fold <n> threshold during block-diagram generation (default 25 elements) \n";
 	cout << "-mns <n> \t--max-name-size <n> threshold during block-diagram generation (default 40 char)\n";
 	cout << "-sn \t\tuse --simple-names (without arguments) during block-diagram generation\n";
+    cout << "-w \t\t--wagner output a functional-style version of the input dsp file\n";
 	cout << "-xml \t\tgenerate an XML description file\n";
     cout << "-json \t\tgenerate a JSON description file\n";
     cout << "-blur \t\tadd a --shadow-blur to SVG boxes\n";
@@ -1000,13 +1006,17 @@ static pair<InstructionsCompiler*, CodeContainer*> generateCode(Tree signals, in
         #else
             throw faustexception("ERROR : -lang wasm not supported since WASM backend is not built\n");
         #endif
+        } if (gGlobal->gOutputLang == "wagner") {
+            // We do nothing as we use no container.
         } else {
             stringstream error;
             error << "ERROR : cannot find compiler for " << "\"" << gGlobal->gOutputLang  << "\"" << endl;
             throw faustexception(error.str());
         }
-        
-        if (gGlobal->gVectorSwitch) {
+
+        if (gGlobal->gOutputLang == "wagner") {
+            comp = new WagnerCompiler(container);
+        } else if (gGlobal->gVectorSwitch) {
             comp = new DAGInstructionsCompiler(container);
         } else {
             comp = new InstructionsCompiler(container);

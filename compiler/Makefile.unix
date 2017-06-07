@@ -94,7 +94,7 @@ endif
 AR ?= ar
 RANLIB ?= ranlib
 
-CXXFLAGS ?= -O3 -std=c++11 -Wall -Wuninitialized
+CXXFLAGS ?= -g -O2 -std=c++11 -Wall -Wuninitialized
 ##CXXFLAGS ?= -O3 -Wall -Wuninitialized $(ARCHFLAGS)
 CXXFLAGS += -Wno-parentheses $(addprefix -I, $(subprojects)) -DINSTALL_PREFIX='"$(prefix)"'
 
@@ -541,6 +541,7 @@ generator/dag_instructions_compiler.o: generator/occurences.hh signals/ppsig.hh 
 generator/dag_instructions_compiler.o: errors/timing.hh signals/recursivness.hh normalize/privatise.hh
 generator/dag_instructions_compiler.o: normalize/simplify.hh extended/xtended.hh signals/sigvisitor.hh
 generator/dag_instructions_compiler.o: documentator/lateq.hh signals/prim2.hh
+generator/wagner_compiler.o: generator/wExp.hh generator/wagner_compiler.hh
 generator/description.o: generator/description.hh signals/signals.hh errors/exception.hh tlib/tlib.hh tlib/symbol.hh
 generator/description.o: garbageable.hh tlib/node.hh tlib/tree.hh tlib/num.hh tlib/list.hh tlib/shlysis.hh
 generator/description.o: signals/binop.hh generator/interpreter/fir_opcode.hh tlib/smartpointer.hh generator/uitree.hh
