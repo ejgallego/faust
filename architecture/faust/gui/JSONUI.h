@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sstream>
 #include <assert.h>
+#include <string.h>
 
 #include "faust/gui/UI.h"
 #include "faust/gui/PathBuilder.h"
